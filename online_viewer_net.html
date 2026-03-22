@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Us ❤️</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{--coral:#F05C5C;--amber:#E8960C;--warm-pink:#E8609A;--purple:#2D7DD2;--green:#18A754;--blue:#1A6FC4;--bg:#E8F3FE;--surface:#FFFFFF;--surface2:#D6EAFB;--surface3:#B8D9F7;--text:#0C2340;--text-muted:#4F7499;--border:rgba(29,99,176,0.12);--radius:18px;--radius-sm:10px}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;max-width:430px;margin:0 auto;overflow-x:hidden}
+#loadingScreen{position:fixed;inset:0;z-index:999;background:linear-gradient(160deg,#C8E4FA 0%,#EBF5FE 50%,#BDD8F5 100%);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px}
+.loading-logo{font-family:'Syne',sans-serif;font-size:44px;font-weight:800;background:linear-gradient(135deg,var(--blue),var(--warm-pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.loading-spinner{width:36px;height:36px;border:3px solid rgba(29,99,176,.15);border-top-color:var(--blue);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-status{font-size:13px;color:var(--text-muted);text-align:center;padding:0 30px}
+#loginScreen{position:fixed;inset:0;z-index:500;background:linear-gradient(160deg,#C8E4FA 0%,#EBF5FE 50%,#BDD8F5 100%);display:none;flex-direction:column;align-items:center;justify-content:center;padding:30px 24px}
+.login-logo{font-family:'Syne',sans-serif;font-size:44px;font-weight:800;background:linear-gradient(135deg,var(--blue),var(--warm-pink));-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:6px;text-align:center}
+.login-sub{font-size:14px;color:var(--text-muted);margin-bottom:44px;text-align:center}
+.login-label{font-size:12px;color:var(--text-muted);margin-bottom:14px;letter-spacing:1px;text-transform:uppercase}
+.login-cards{display:flex;flex-direction:column;gap:14px;width:100%;max-width:320px}
+.login-card{background:var(--surface);border:1.5px solid var(--border);border-radius:20px;padding:18px 22px;cursor:pointer;display:flex;align-items:center;gap:14px;transition:transform .2s,border-color .2s;box-shadow:0 2px 12px rgba(29,99,176,.08)}
+.login-card:active{transform:scale(.97)}
+.login-card.his{border-color:rgba(29,111,196,.3)}.login-card.hers{border-color:rgba(232,96,154,.3)}
+.lc-avatar{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+.login-card.his .lc-avatar{background:rgba(29,111,196,.1)}.login-card.hers .lc-avatar{background:rgba(232,96,154,.1)}
+.lc-name{font-family:'Syne',sans-serif;font-size:19px;font-weight:700}
+.login-card.his .lc-name{color:var(--blue)}.login-card.hers .lc-name{color:var(--warm-pink)}
+.lc-sub{font-size:12px;color:var(--text-muted);margin-top:2px}.lc-arrow{margin-left:auto;color:var(--text-muted);font-size:22px}
+#app{display:none;padding-bottom:92px}
+.header{background:linear-gradient(135deg,#1558A8 0%,#2478CC 100%);padding:46px 20px 20px;position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:-60px;right:-40px;width:200px;height:200px;background:radial-gradient(circle,rgba(255,255,255,.15) 0%,transparent 70%);border-radius:50%}
+.hdr-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px}
+.hdr-greeting{font-size:12px;color:rgba(255,255,255,.7)}
+.hdr-name{font-family:'Syne',sans-serif;font-size:22px;font-weight:800;color:#FFF;line-height:1.1}
+.switch-btn{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);padding:6px 12px;border-radius:20px;font-size:12px;color:rgba(255,255,255,.9);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.sync-dot{width:7px;height:7px;border-radius:50%;background:#4ADE80;display:inline-block;margin-left:6px;vertical-align:middle;animation:pulse 2s ease-in-out infinite}
+.sync-dot.offline{background:#F05C5C;animation:none}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+.rem-banner{background:rgba(255,255,255,.2);border:1px solid rgba(255,255,255,.3);border-radius:var(--radius-sm);padding:10px 13px;margin-bottom:11px;display:flex;align-items:center;gap:10px;cursor:pointer}
+.rem-banner.hidden{display:none}
+.rb-icon{font-size:20px;flex-shrink:0}.rb-body{flex:1}
+.rb-title{font-size:14px;font-weight:600;color:#fff}.rb-sub{font-size:12px;color:rgba(255,255,255,.75);margin-top:1px}
+.rb-close{background:none;border:none;color:rgba(255,255,255,.7);font-size:18px;cursor:pointer;padding:2px;flex-shrink:0}
+.score-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:11px}
+.score-card{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.25);border-radius:var(--radius-sm);padding:11px 13px}
+.score-card.his{border-top:3px solid rgba(255,255,255,.9)}.score-card.hers{border-top:3px solid var(--warm-pink)}
+.sc-label{font-size:10px;color:rgba(255,255,255,.7);text-transform:uppercase;letter-spacing:1px}
+.sc-pts{font-family:'Syne',sans-serif;font-size:26px;font-weight:700;line-height:1.1;color:#fff}
+.score-card.hers .sc-pts{color:#FFD0E8}.sc-sub{font-size:10px;color:rgba(255,220,100,.9);margin-top:3px}
+.level-bar{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.2);border-radius:var(--radius-sm);padding:10px 13px}
+.lb-row{display:flex;justify-content:space-between;align-items:center;margin-bottom:5px}
+.lb-label{font-size:12px;color:rgba(255,255,255,.7)}.lb-name{font-family:'Syne',sans-serif;font-size:12px;color:rgba(255,220,100,.95)}
+.lb-bg{height:5px;background:rgba(255,255,255,.2);border-radius:10px;overflow:hidden}
+.lb-fill{height:100%;background:linear-gradient(90deg,rgba(255,220,100,.9),rgba(255,255,255,.9));border-radius:10px;transition:width .6s cubic-bezier(.4,0,.2,1)}
+.tab-nav{display:flex;gap:7px;padding:12px 18px 8px;overflow-x:auto;scrollbar-width:none}
+.tab-nav::-webkit-scrollbar{display:none}
+.tab-btn{flex-shrink:0;padding:7px 13px;border-radius:20px;border:1px solid var(--border);background:var(--surface);color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;transition:all .2s;white-space:nowrap}
+.tab-btn.active{background:var(--surface3);border-color:var(--purple);color:var(--text)}
+.content{padding:4px 18px 0}.section{display:none}.section.active{display:block}
+.sec-hdr{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.sec-title{font-family:'Syne',sans-serif;font-size:19px;font-weight:700}
+.sec-desc{font-size:13px;color:var(--text-muted);margin-bottom:12px;margin-top:-4px;line-height:1.5}
+.add-btn{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));border:none;color:white;font-size:22px;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 14px rgba(29,111,196,.3);transition:transform .15s;flex-shrink:0}
+.add-btn:active{transform:scale(.9)}
+.task-list{display:flex;flex-direction:column;gap:9px}
+.task-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:12px 13px;display:flex;align-items:center;gap:10px;position:relative;overflow:hidden;cursor:pointer;transition:opacity .25s;box-shadow:0 1px 6px rgba(29,99,176,.06)}
+.task-card.done{opacity:.5;border-color:rgba(24,167,84,.25)}.task-card.done .tk-name{text-decoration:line-through}
+.task-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--ac,var(--purple));border-radius:3px 0 0 3px}
+.check-circle{width:26px;height:26px;border-radius:50%;border:2px solid var(--text-muted);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px;transition:all .2s}
+.task-card.done .check-circle{background:var(--green);border-color:var(--green);color:white}
+.tk-info{flex:1;min-width:0}.tk-name{font-size:14px;font-weight:500}
+.tk-meta{font-size:11px;color:var(--text-muted);margin-top:2px;display:flex;align-items:center;gap:5px;flex-wrap:wrap}
+.tk-pts{font-family:'Syne',sans-serif;font-size:12px;color:var(--amber);flex-shrink:0}
+.tk-del{background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;padding:3px;flex-shrink:0;opacity:.4}
+.assign-badge{font-size:10px;padding:2px 7px;border-radius:10px;font-weight:600;text-transform:uppercase;letter-spacing:.4px}
+.ab-me{background:rgba(29,111,196,.12);color:var(--blue)}.ab-her{background:rgba(232,96,154,.12);color:var(--warm-pink)}.ab-both{background:rgba(29,111,196,.08);color:var(--purple)}
+.fin-summary{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:15px;margin-bottom:12px}
+.fin-row{display:flex;justify-content:space-between;margin-bottom:7px;font-size:13px}
+.fin-label{color:var(--text-muted)}.fin-val{font-weight:600}.fin-pos{color:var(--green)}.fin-neg{color:var(--coral)}
+.fin-div{height:1px;background:var(--border);margin:8px 0}
+.win-card{background:linear-gradient(135deg,rgba(24,167,84,.07),rgba(29,111,196,.07));border:1px solid rgba(24,167,84,.2);border-radius:var(--radius);padding:12px 14px;display:flex;align-items:center;gap:11px;margin-bottom:9px}
+.win-icon{font-size:25px}.win-info{flex:1}.win-name{font-size:14px;font-weight:600;color:var(--green)}.win-date{font-size:11px;color:var(--text-muted);margin-top:2px}
+.win-del{background:none;border:none;color:var(--text-muted);font-size:14px;cursor:pointer;opacity:.4}
+.rem-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px}
+.rem-card-title{font-family:'Syne',sans-serif;font-size:16px;margin-bottom:6px}
+.rem-card p{font-size:13px;color:var(--text-muted);line-height:1.6;margin-bottom:12px}
+.freq-row{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:13px}
+.freq-chip{padding:7px 13px;border-radius:20px;border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);font-size:13px;cursor:pointer;transition:all .15s}
+.freq-chip.active{background:var(--surface3);border-color:var(--purple);color:var(--text)}
+.notif-btn{width:100%;padding:13px;border-radius:var(--radius-sm);border:none;background:linear-gradient(135deg,var(--blue),var(--purple));color:white;font-family:'DM Sans',sans-serif;font-size:15px;font-weight:600;cursor:pointer;margin-bottom:9px}
+.share-btn{width:100%;padding:11px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer}
+.notif-status{font-size:13px;color:var(--text-muted);text-align:center;margin-top:8px;min-height:16px}
+.tip-card{border-radius:var(--radius-sm);padding:11px 13px;margin-top:10px}
+.tip-amber{background:rgba(232,150,12,.07);border:1px solid rgba(232,150,12,.2)}.tip-blue{background:rgba(29,111,196,.07);border:1px solid rgba(29,111,196,.18);margin-top:9px}
+.tip-card p{font-size:13px;line-height:1.6;margin:0}.tip-amber p{color:#9B6A00}.tip-blue p{color:var(--blue)}
+.modal-overlay{position:fixed;inset:0;background:rgba(10,30,60,.4);z-index:100;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.modal-overlay.open{display:flex}
+.modal{background:var(--surface);border:1px solid var(--border);border-radius:24px 24px 0 0;padding:22px 18px 36px;width:100%;max-width:430px;animation:slideUp .3s cubic-bezier(.4,0,.2,1)}
+@keyframes slideUp{from{transform:translateY(100%);opacity:0}to{transform:translateY(0);opacity:1}}
+.modal-title{font-family:'Syne',sans-serif;font-size:19px;margin-bottom:16px;text-align:center}
+.fg{margin-bottom:12px}.fl{font-size:13px;color:var(--text-muted);margin-bottom:5px;display:block}
+.fi,.fs{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius-sm);padding:11px 13px;color:var(--text);font-family:'DM Sans',sans-serif;font-size:14px;outline:none;transition:border-color .2s;-webkit-appearance:none}
+.fi:focus,.fs:focus{border-color:var(--purple)}.fs option{background:var(--surface2)}
+.pts-row{display:flex;gap:7px}
+.pts-chip{flex:1;padding:9px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;text-align:center;transition:all .15s}
+.pts-chip.selected{background:var(--surface3);border-color:var(--amber);color:var(--amber);font-weight:600}
+.modal-actions{display:flex;gap:10px;margin-top:14px}
+.btn-cancel{flex:1;padding:13px;border-radius:var(--radius-sm);border:1px solid var(--border);background:var(--surface2);color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:14px;cursor:pointer}
+.btn-save{flex:2;padding:13px;border-radius:var(--radius-sm);border:none;background:linear-gradient(135deg,var(--blue),var(--purple));color:white;font-family:'DM Sans',sans-serif;font-size:14px;font-weight:600;cursor:pointer}
+.toast{position:fixed;bottom:100px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--surface2);border:1px solid var(--border);border-radius:30px;padding:10px 20px;font-size:13px;opacity:0;transition:all .3s;z-index:200;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.conf-wrap{position:fixed;top:0;left:0;width:100%;height:100%;pointer-events:none;z-index:300;overflow:hidden}
+.conf-piece{position:absolute;width:8px;height:8px;border-radius:2px;animation:cfFall 1.2s ease-in forwards}
+@keyframes cfFall{0%{transform:translateY(-20px) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+.empty-state{text-align:center;padding:34px 18px;color:var(--text-muted)}.empty-icon{font-size:36px;margin-bottom:8px}.empty-text{font-size:13px}
+.bottom-bar{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:430px;background:var(--surface);border-top:1px solid var(--border);padding:9px 0 18px;display:flex;justify-content:space-around;z-index:50;box-shadow:0 -2px 12px rgba(29,99,176,.08)}
+.nav-item{display:flex;flex-direction:column;align-items:center;gap:2px;cursor:pointer;padding:4px 10px;border-radius:var(--radius-sm);transition:all .2s}
+.nav-item.active{background:var(--surface2)}.nav-icon{font-size:19px}.nav-label{font-size:10px;color:var(--text-muted)}.nav-item.active .nav-label{color:var(--purple)}
+</style>
+</head>
+<body>
+
+<div id="loadingScreen">
+  <div class="loading-logo">Us ❤️</div>
+  <div class="loading-spinner"></div>
+  <div class="loading-status" id="loadingStatus">Connecting…</div>
+</div>
+
+<div id="loginScreen">
+  <div class="login-logo">Us ❤️</div>
+  <div class="login-sub">Your relationship, leveled up</div>
+  <div class="login-label">Who are you?</div>
+  <div class="login-cards">
+    <div class="login-card his" onclick="login('him')">
+      <div class="lc-avatar">👨🏽</div>
+      <div><div class="lc-name">It's Me</div><div class="lc-sub">Promises, chores & finances</div></div>
+      <div class="lc-arrow">›</div>
+    </div>
+    <div class="login-card hers" onclick="login('her')">
+      <div class="lc-avatar">👩🏽</div>
+      <div><div class="lc-name">Nathaly</div><div class="lc-sub">My goals, his tasks & wins</div></div>
+      <div class="lc-arrow">›</div>
+    </div>
+  </div>
+</div>
+
+<div id="app">
+  <div class="header">
+    <div class="hdr-top">
+      <div><div class="hdr-greeting" id="greeting"></div><div class="hdr-name" id="userName"></div></div>
+      <button class="switch-btn" onclick="switchUser()">Switch 🔄<span class="sync-dot" id="syncDot"></span></button>
+    </div>
+    <div class="rem-banner hidden" id="remBanner" onclick="goTab('reminders')">
+      <div class="rb-icon">🔔</div>
+      <div class="rb-body"><div class="rb-title" id="rbTitle">Check in!</div><div class="rb-sub" id="rbSub"></div></div>
+      <button class="rb-close" onclick="dismissBanner(event)">×</button>
+    </div>
+    <div class="score-row">
+      <div class="score-card his"><div class="sc-label">Him</div><div class="sc-pts" id="myPts">0</div><div class="sc-sub" id="myDone"></div></div>
+      <div class="score-card hers"><div class="sc-label">Nathaly</div><div class="sc-pts" id="herPts">0</div><div class="sc-sub" id="herDone"></div></div>
+    </div>
+    <div class="level-bar">
+      <div class="lb-row"><span class="lb-label">Couple Level</span><span class="lb-name" id="levelName">🌱 Getting Started</span></div>
+      <div class="lb-bg"><div class="lb-fill" id="levelFill" style="width:0%"></div></div>
+    </div>
+  </div>
+  <div class="tab-nav" id="tabNav"></div>
+  <div class="content" id="content"></div>
+  <div class="bottom-bar" id="bottomBar"></div>
+</div>
+
+<div class="modal-overlay" id="modalOverlay" onclick="closeModalOutside(event)">
+  <div class="modal">
+    <div class="modal-title" id="modalTitle">Add</div>
+    <div class="fg"><label class="fl">Description</label><input class="fi" id="fName" placeholder="What needs to be done?"/></div>
+    <div class="fg" id="fgAssign"><label class="fl">Assigned to</label>
+      <select class="fs" id="fAssign"><option value="me">Him</option><option value="her">Nathaly</option><option value="both">Both</option></select></div>
+    <div class="fg" id="fgPts"><label class="fl">Points value</label>
+      <div class="pts-row"><div class="pts-chip" onclick="selPts(this,5)">5⭐</div><div class="pts-chip selected" onclick="selPts(this,10)">10⭐</div><div class="pts-chip" onclick="selPts(this,20)">20⭐</div><div class="pts-chip" onclick="selPts(this,50)">50⭐</div></div></div>
+    <div class="fg" id="fgAmt" style="display:none"><label class="fl">Amount ($)</label><input class="fi" id="fAmt" type="number" placeholder="0.00" step="0.01"/></div>
+    <div class="fg" id="fgPaidBy" style="display:none"><label class="fl">Paid by</label>
+      <select class="fs" id="fPaidBy"><option value="me">Him</option><option value="her">Nathaly</option><option value="split">Split equally</option></select></div>
+    <div class="modal-actions"><button class="btn-cancel" onclick="closeModal()">Cancel</button><button class="btn-save" onclick="saveTask()">Save ✓</button></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+<div class="conf-wrap" id="confWrap"></div>
+
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, onSnapshot, setDoc, getDoc } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+// ╔══════════════════════════════════════════════════════╗
+// ║  STEP 1: Paste your Firebase config object here     ║
+// ║  Get it from: Firebase Console → Project Settings   ║
+// ║               → Your apps → SDK setup               ║
+// ╚══════════════════════════════════════════════════════╝
+// For Firebase JS SDK v7.20.0 and later, measurementId is optional
+const firebaseConfig = {
+  apiKey: "AIzaSyB-qqCHH6yLFzRRsM11Q5nBzAF4SGGblzY",
+  authDomain: "our-shared-app-4cb3a.firebaseapp.com",
+  projectId: "our-shared-app-4cb3a",
+  storageBucket: "our-shared-app-4cb3a.firebasestorage.app",
+  messagingSenderId: "798388175799",
+  appId: "1:798388175799:web:474c9d91d6dfacecf45e32",
+  measurementId: "G-GX86MD8Y4F"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getFirestore(app);
+const REF = doc(db, "couple", "state");
+
+let S = { promises:[], chores:[], goals:[], meals:[], money:[], wins:[], myPts:0, herPts:0, reminderFreq:'daily', notifEnabled:false, lastVisit:null, bannerDismissed:false };
+let user=null, curTab=null, curModalSec=null, selPtsVal=10, unsubscribe=null;
+
+const LEVELS=[[0,'🌱 Getting Started'],[100,'🌿 Growing Together'],[300,'🌸 In Full Bloom'],[600,'💫 Power Couple'],[1000,'👑 Unbreakable'],[1500,'✨ Legendary Us']];
+const AC={promises:'#1A6FC4',hisRequests:'#1A6FC4',chores:'#2D7DD2',goals:'#E8609A',meals:'#E8960C',money:'#18A754',wins:'#D4A000'};
+const HIM=[{id:'promises',emoji:'📋',label:'Promises',desc:'Things Nathaly has asked you to do. Don\'t forget! 💙'},{id:'chores',emoji:'🧹',label:'Chores',desc:'Shared home responsibilities'},{id:'goals',emoji:'🎯',label:'Her Goals',desc:'Help Nathaly grow — celebrate every step 🌟'},{id:'meals',emoji:'🍳',label:'Meals',desc:'Who cooked or ordered tonight?'},{id:'money',emoji:'💰',label:'Money',desc:'Keep it fair & transparent 💳'},{id:'wins',emoji:'🏆',label:'Wins',desc:'Log every win, big or small!'},{id:'reminders',emoji:'🔔',label:'Reminders',desc:''}];
+const HER=[{id:'goals',emoji:'🎯',label:'My Goals',desc:'Your personal goals — one step at a time 💪'},{id:'hisRequests',emoji:'📋',label:'His Tasks',desc:'Things you\'ve asked him to do 👀'},{id:'chores',emoji:'🧹',label:'Chores',desc:'Shared home responsibilities'},{id:'meals',emoji:'🍳',label:'Meals',desc:'Who cooked or ordered tonight?'},{id:'money',emoji:'💰',label:'Money',desc:'Keep it fair & transparent 💳'},{id:'wins',emoji:'🏆',label:'Wins',desc:'Log every win, big or small!'},{id:'reminders',emoji:'🔔',label:'Reminders',desc:''}];
+
+// ── Firebase helpers ───────────────────────────────────
+async function save(){
+  try{ await setDoc(REF,S); setSyncDot(true); }
+  catch(e){ setSyncDot(false); console.error('Save error',e); }
+}
+
+function startListening(){
+  if(unsubscribe) unsubscribe();
+  unsubscribe = onSnapshot(REF, snap=>{
+    if(snap.exists()){ S={...S,...snap.data()}; render(); setSyncDot(true); }
+  }, e=>{ setSyncDot(false); console.error('Listener',e); });
+}
+
+function setSyncDot(ok){ const d=document.getElementById('syncDot'); if(d) d.className='sync-dot'+(ok?'':' offline'); }
+
+async function maybeSeed(){
+  const snap=await getDoc(REF);
+  if(!snap.exists()){
+    S.promises=[{id:1,name:'Follow through on plans',assign:'me',pts:10,done:false,date:Date.now()},{id:2,name:'Call back when I say I will',assign:'me',pts:10,done:false,date:Date.now()}];
+    S.chores=[{id:3,name:'Take out the trash',assign:'me',pts:5,done:false,date:Date.now()},{id:4,name:'Wipe down the counters',assign:'her',pts:10,done:false,date:Date.now()},{id:5,name:'Vacuum together',assign:'both',pts:15,done:false,date:Date.now()}];
+    S.goals=[{id:6,name:'Cook one new recipe this week',assign:'her',pts:20,done:false,date:Date.now()},{id:7,name:'Research driving school options',assign:'her',pts:30,done:false,date:Date.now()},{id:8,name:'Celebrate passing NBCOT! 🎉',assign:'her',pts:50,done:false,date:Date.now()}];
+    S.wins=[{id:9,name:'Nathaly passed her NBCOT! 🎓',date:Date.now()}];
+    await save();
+  } else { S={...S,...snap.data()}; }
+}
+
+async function init(){
+  document.getElementById('loadingStatus').textContent='Loading your data…';
+  try{
+    await maybeSeed();
+    document.getElementById('loadingScreen').style.display='none';
+    document.getElementById('loginScreen').style.display='flex';
+  } catch(e){
+    document.getElementById('loadingStatus').textContent='❌ Firebase connection failed.\nCheck your config values in index.html and try again.';
+    console.error(e);
+  }
+}
+
+// ── Login / Switch ─────────────────────────────────────
+window.login=function(who){ user=who; S.lastVisit=Date.now(); S.bannerDismissed=false; save(); document.getElementById('loginScreen').style.display='none'; document.getElementById('app').style.display='block'; buildUI(); render(); startListening(); checkBanner(); };
+window.switchUser=function(){ if(unsubscribe) unsubscribe(); document.getElementById('loginScreen').style.display='flex'; document.getElementById('app').style.display='none'; };
+
+// ── Build UI ───────────────────────────────────────────
+function buildUI(){
+  const tabs=user==='him'?HIM:HER; curTab=tabs[0].id;
+  const h=new Date().getHours();
+  document.getElementById('greeting').textContent=h<12?'Good morning,':h<18?'Good afternoon,':'Good evening,';
+  document.getElementById('userName').textContent=user==='him'?'Hey you 👋':'Hey Nathaly 👋';
+  document.getElementById('tabNav').innerHTML=tabs.map(t=>`<button class="tab-btn${t.id===curTab?' active':''}" onclick="goTab('${t.id}')">${t.emoji} ${t.label}</button>`).join('');
+  document.getElementById('bottomBar').innerHTML=tabs.slice(0,5).map(t=>`<div class="nav-item${t.id===curTab?' active':''}" id="nav-${t.id}" onclick="goTab('${t.id}')"><div class="nav-icon">${t.emoji}</div><div class="nav-label">${t.label}</div></div>`).join('');
+  buildSections(tabs);
+}
+
+function buildSections(tabs){
+  const c=document.getElementById('content'); c.innerHTML='';
+  tabs.forEach(t=>{
+    const d=document.createElement('div'); d.className='section'+(t.id===curTab?' active':''); d.id='sec-'+t.id;
+    if(t.id==='reminders') d.innerHTML=reminderHTML();
+    else if(t.id==='money') d.innerHTML=`<div class="sec-hdr"><div class="sec-title">💰 Finances</div><button class="add-btn" onclick="openModal('money')">+</button></div><p class="sec-desc">${t.desc}</p><div class="fin-summary"><div class="fin-row"><span class="fin-label">He paid</span><span class="fin-val fin-pos" id="finHis">$0.00</span></div><div class="fin-row"><span class="fin-label">Nathaly paid</span><span class="fin-val fin-pos" id="finHer">$0.00</span></div><div class="fin-div"></div><div class="fin-row"><span class="fin-label" style="font-weight:600">Balance</span><span class="fin-val" id="finBal">Even ✓</span></div></div><div class="task-list" id="list-money"></div>`;
+    else if(t.id==='wins') d.innerHTML=`<div class="sec-hdr"><div class="sec-title">🏆 Our Wins</div><button class="add-btn" onclick="openModal('wins')">+</button></div><p class="sec-desc">${t.desc}</p><div id="list-wins"></div>`;
+    else if(t.id==='hisRequests') d.innerHTML=`<div class="sec-hdr"><div class="sec-title">📋 His Tasks</div></div><p class="sec-desc">${t.desc}</p><div class="task-list" id="list-hisRequests"></div>`;
+    else d.innerHTML=`<div class="sec-hdr"><div class="sec-title">${t.emoji} ${t.label}</div><button class="add-btn" onclick="openModal('${t.id}')">+</button></div><p class="sec-desc">${t.desc}</p><div class="task-list" id="list-${t.id}"></div>`;
+    c.appendChild(d);
+  });
+}
+
+function reminderHTML(){ return`<div class="rem-card"><div class="rem-card-title">🔔 Notifications</div><p>Get a daily nudge so neither of you forgets to check in.</p><div class="freq-row"><div class="freq-chip${S.reminderFreq==='morning'?' active':''}" onclick="setFreq('morning',this)">☀️ Morning</div><div class="freq-chip${S.reminderFreq==='evening'?' active':''}" onclick="setFreq('evening',this)">🌙 Evening</div><div class="freq-chip${S.reminderFreq==='daily'?' active':''}" onclick="setFreq('daily',this)">🔁 Daily</div></div><button class="notif-btn" onclick="enableNotif()">Enable Reminders 🔔</button><button class="share-btn" onclick="shareApp()">📲 Share app with Nathaly</button><div class="notif-status" id="notifStatus">${S.notifEnabled?'✅ Notifications are on!':''}</div></div><div class="tip-card tip-amber"><p>💡 <strong>Add to home screen:</strong> Tap Share → "Add to Home Screen" for instant one-tap access.</p></div><div class="tip-card tip-blue"><p>📲 <strong>Real-time sync:</strong> Both phones share the same live data. Any change either of you makes shows up instantly on the other's phone!</p></div>`; }
+
+// ── Tabs ───────────────────────────────────────────────
+window.goTab=function(id){ curTab=id; document.querySelectorAll('.section').forEach(s=>s.classList.remove('active')); const sec=document.getElementById('sec-'+id); if(sec) sec.classList.add('active'); document.querySelectorAll('.tab-btn').forEach(b=>b.classList.toggle('active',b.getAttribute('onclick')===`goTab('${id}')`)); document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.id==='nav-'+id)); render(); };
+
+// ── Banner ─────────────────────────────────────────────
+function checkBanner(){ if(!S.lastVisit||S.bannerDismissed) return; const hrs=(Date.now()-S.lastVisit)/(1000*3600); if(hrs>18){ document.getElementById('rbTitle').textContent='Welcome back! 👋'; document.getElementById('rbSub').textContent=`It's been ${Math.floor(hrs)}h — check what's new`; document.getElementById('remBanner').classList.remove('hidden'); } }
+window.dismissBanner=function(e){ e.stopPropagation(); S.bannerDismissed=true; save(); document.getElementById('remBanner').classList.add('hidden'); };
+
+// ── Notifications ──────────────────────────────────────
+window.enableNotif=async function(){ const el=document.getElementById('notifStatus'); if(!('Notification' in window)){ el.textContent='❌ Not supported'; return; } const p=await Notification.requestPermission(); if(p==='granted'){ S.notifEnabled=true; await save(); el.textContent='✅ Notifications enabled!'; scheduleNotif(); showToast('Reminders on! 🔔'); } else { el.textContent='❌ Permission denied'; } };
+function scheduleNotif(){ if(!S.notifEnabled||Notification.permission!=='granted') return; const now=new Date(),t=new Date(); if(S.reminderFreq==='morning'){t.setHours(9,0,0,0);if(t<=now)t.setDate(t.getDate()+1);}else if(S.reminderFreq==='evening'){t.setHours(20,0,0,0);if(t<=now)t.setDate(t.getDate()+1);}else{t.setTime(now.getTime()+24*3600*1000);} setTimeout(()=>{new Notification('Us ❤️',{body:"Don't forget to check in with each other today!"});scheduleNotif();},t-now); }
+window.setFreq=function(f,el){ S.reminderFreq=f; save(); document.querySelectorAll('.freq-chip').forEach(c=>c.classList.remove('active')); el.classList.add('active'); };
+window.shareApp=function(){ const url=window.location.href; const msg='Hey! I made us this app to stay on the same page 💕 Open it here: '+url; if(navigator.share) navigator.share({title:'Us ❤️',text:msg,url}); else if(navigator.clipboard){ navigator.clipboard.writeText(msg); showToast('Link copied! 📲'); } else showToast('Copy the URL and send it!'); };
+
+// ── Modal ──────────────────────────────────────────────
+window.openModal=function(sec){ curModalSec=sec; document.getElementById('fName').value=''; document.getElementById('fAmt').value=''; const isMoney=sec==='money',isWin=sec==='wins'; document.getElementById('fgPts').style.display=(isMoney||isWin)?'none':''; document.getElementById('fgAmt').style.display=isMoney?'':'none'; document.getElementById('fgPaidBy').style.display=isMoney?'':'none'; document.getElementById('fgAssign').style.display=isMoney?'none':''; document.getElementById('fAssign').value=sec==='goals'?'her':'me'; const titles={promises:'📋 Add Promise',chores:'🧹 Add Chore',goals:'🎯 Add Goal',meals:'🍳 Log Meal',money:'💰 Log Expense',wins:'🏆 Log Win'}; document.getElementById('modalTitle').textContent=titles[sec]||'Add'; selPts(document.querySelectorAll('.pts-chip')[1],10); document.getElementById('modalOverlay').classList.add('open'); setTimeout(()=>document.getElementById('fName').focus(),300); };
+window.closeModal=function(){ document.getElementById('modalOverlay').classList.remove('open'); };
+window.closeModalOutside=function(e){ if(e.target===document.getElementById('modalOverlay')) closeModal(); };
+window.selPts=function(el,v){ document.querySelectorAll('.pts-chip').forEach(c=>c.classList.remove('selected')); el.classList.add('selected'); selPtsVal=v; };
+window.saveTask=async function(){ const name=document.getElementById('fName').value.trim(); if(!name){ showToast('Enter a description!'); return; } if(curModalSec==='money'){ S.money.push({id:Date.now(),name,amount:parseFloat(document.getElementById('fAmt').value)||0,paidBy:document.getElementById('fPaidBy').value,date:Date.now()}); } else if(curModalSec==='wins'){ S.wins.push({id:Date.now(),name,date:Date.now()}); confetti(); } else { S[curModalSec].push({id:Date.now(),name,assign:document.getElementById('fAssign').value,pts:selPtsVal,done:false,date:Date.now()}); } closeModal(); await save(); render(); showToast('Added ✓'); };
+
+// ── Toggle / Delete ────────────────────────────────────
+window.toggleTask=async function(sec,id){ const item=S[sec].find(t=>t.id===id); if(!item) return; item.done=!item.done; const pts=item.pts||10; if(item.done){ if(item.assign==='me'||item.assign==='both') S.myPts+=pts; if(item.assign==='her'||item.assign==='both') S.herPts+=pts; confetti(); showToast(`+${pts} pts! 🎉`); } else { if(item.assign==='me'||item.assign==='both') S.myPts=Math.max(0,S.myPts-pts); if(item.assign==='her'||item.assign==='both') S.herPts=Math.max(0,S.herPts-pts); } await save(); render(); };
+window.delItem=async function(sec,id,e){ e.stopPropagation(); S[sec]=S[sec].filter(t=>t.id!==id); await save(); render(); };
+
+// ── Render ─────────────────────────────────────────────
+function render(){ if(!user) return; const tabs=user==='him'?HIM:HER; tabs.forEach(t=>{ if(t.id==='reminders'||t.id==='money'||t.id==='wins') return; if(t.id==='hisRequests'){ renderList('promises','list-hisRequests',true); return; } renderList(t.id,'list-'+t.id,false); }); renderMoney(); renderWins(); updateScores(); }
+function renderList(sec,elId,ro){ const el=document.getElementById(elId); if(!el) return; const list=S[sec]; if(!list?.length){ el.innerHTML=`<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-text">${ro?'Nothing here yet':'Nothing yet — tap + to add!'}</div></div>`; return; } const color=AC[sec]||'#2D7DD2'; el.innerHTML=[...list].sort((a,b)=>a.done-b.done).map(item=>`<div class="task-card${item.done?' done':''}" style="--ac:${color}" ${ro?'':` onclick="toggleTask('${sec}',${item.id})"`}><div class="check-circle">${item.done?'✓':''}</div><div class="tk-info"><div class="tk-name">${item.name}</div><div class="tk-meta"><span class="assign-badge ${item.assign==='me'?'ab-me':item.assign==='her'?'ab-her':'ab-both'}">${item.assign==='me'?'Him':item.assign==='her'?'Nathaly':'Both'}</span>${fd(item.date)}</div></div><div class="tk-pts">+${item.pts}⭐</div>${ro?'':`<button class="tk-del" onclick="delItem('${sec}',${item.id},event)">🗑</button>`}</div>`).join(''); }
+function renderMoney(){ const el=document.getElementById('list-money'); if(!el) return; let his=0,her=0; S.money.forEach(i=>{if(i.paidBy==='me')his+=i.amount;else if(i.paidBy==='her')her+=i.amount;else{his+=i.amount/2;her+=i.amount/2;}}); const fh=document.getElementById('finHis'),fhe=document.getElementById('finHer'),fb=document.getElementById('finBal'); if(fh)fh.textContent='$'+his.toFixed(2); if(fhe)fhe.textContent='$'+her.toFixed(2); if(fb){const d=his-her;if(Math.abs(d)<.01){fb.textContent='Even ✓';fb.className='fin-val fin-pos';}else if(d>0){fb.textContent=`Nathaly owes $${d.toFixed(2)}`;fb.className='fin-val fin-neg';}else{fb.textContent=`He owes $${Math.abs(d).toFixed(2)}`;fb.className='fin-val fin-neg';}} if(!S.money.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon">💳</div><div class="empty-text">No expenses yet</div></div>`;return;} el.innerHTML=[...S.money].reverse().map(i=>`<div class="task-card" style="--ac:#18A754"><div class="check-circle" style="font-size:14px">💳</div><div class="tk-info"><div class="tk-name">${i.name}</div><div class="tk-meta">${i.paidBy==='me'?'He paid':i.paidBy==='her'?'Nathaly paid':'Split'} · ${fd(i.date)}</div></div><div class="tk-pts" style="color:#18A754">$${i.amount.toFixed(2)}</div><button class="tk-del" onclick="delItem('money',${i.id},event)">🗑</button></div>`).join(''); }
+function renderWins(){ const el=document.getElementById('list-wins'); if(!el) return; if(!S.wins.length){el.innerHTML=`<div class="empty-state"><div class="empty-icon">🏆</div><div class="empty-text">Log your first win!</div></div>`;return;} const ic=['🎉','⭐','🌟','💪','🔥','👏','🥳','💫']; el.innerHTML=[...S.wins].reverse().map((w,i)=>`<div class="win-card"><div class="win-icon">${ic[i%ic.length]}</div><div class="win-info"><div class="win-name">${w.name}</div><div class="win-date">${fd(w.date)}</div></div><button class="win-del" onclick="delItem('wins',${w.id},event)">🗑</button></div>`).join(''); }
+function updateScores(){ document.getElementById('myPts').textContent=S.myPts; document.getElementById('herPts').textContent=S.herPts; const tot=S.myPts+S.herPts; let lv=LEVELS[0]; for(const l of LEVELS){if(tot>=l[0])lv=l;else break;} const li=LEVELS.indexOf(lv),nx=LEVELS[li+1]; document.getElementById('levelName').textContent=lv[1]; document.getElementById('levelFill').style.width=(nx?Math.min(100,((tot-lv[0])/(nx[0]-lv[0]))*100):100)+'%'; const all=['promises','chores','goals','meals'].flatMap(s=>S[s]||[]); const md=all.filter(t=>t.done&&(t.assign==='me'||t.assign==='both')).length; const hd=all.filter(t=>t.done&&(t.assign==='her'||t.assign==='both')).length; document.getElementById('myDone').textContent=md>0?`🔥 ${md} done`:''; document.getElementById('herDone').textContent=hd>0?`🔥 ${hd} done`:''; }
+
+function fd(d){return new Date(d).toLocaleDateString('en-US',{month:'short',day:'numeric'});}
+function showToast(m){const t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2200);}
+function confetti(){const w=document.getElementById('confWrap'),c=['#F05C5C','#E8960C','#1A6FC4','#2D7DD2','#18A754','#E8609A','#D4A000'];for(let i=0;i<26;i++){const el=document.createElement('div');el.className='conf-piece';el.style.cssText=`left:${Math.random()*100}vw;top:-10px;background:${c[~~(Math.random()*c.length)]};animation-delay:${Math.random()*.5}s;animation-duration:${.8+Math.random()*.8}s`;w.appendChild(el);el.addEventListener('animationend',()=>el.remove());}}
+
+init();
+</script>
+</body>
+</html>
